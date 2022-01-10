@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>springboot连接phoenix的几种方法 | Kanri's blog</title><meta name="keywords" content="springboot,phoenix,mybatis"><meta name="author" content="鈴木観理"><meta name="copyright" content="鈴木観理"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="虽说是介绍springboot连接phoenix的方法，其实因为用的是jdbc连接方式，其实只要是通过jdbc方式连接的数据库都可以通用，比如 hive。 1.原生方法连接数据库自己手写 Connection ，Statement，PreparedStatement，ResultSet，手写数据库连接和关闭，自己提交sql语句。 这种方法是最开始学习数据库连接的方法，后面连接数据库的方法都是在这样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot连接phoenix的几种方法">
+<meta property="og:url" content="https://blog.kanri.top/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Kanri&#39;s blog">
+<meta property="og:description" content="虽说是介绍springboot连接phoenix的方法，其实因为用的是jdbc连接方式，其实只要是通过jdbc方式连接的数据库都可以通用，比如 hive。 1.原生方法连接数据库自己手写 Connection ，Statement，PreparedStatement，ResultSet，手写数据库连接和关闭，自己提交sql语句。 这种方法是最开始学习数据库连接的方法，后面连接数据库的方法都是在这样">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://pic.yupoo.com/hi-story/bf1e66ea/68234fa4.jpg">
+<meta property="article:published_time" content="2021-07-15T06:23:48.000Z">
+<meta property="article:modified_time" content="2021-07-15T07:25:59.000Z">
+<meta property="article:author" content="鈴木観理">
+<meta property="article:tag" content="springboot">
+<meta property="article:tag" content="phoenix">
+<meta property="article:tag" content="mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://pic.yupoo.com/hi-story/bf1e66ea/68234fa4.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.kanri.top/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'springboot连接phoenix的几种方法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-07-15 15:25:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Kanri's blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://avatars.githubusercontent.com/u/63801131?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('http://pic.yupoo.com/hi-story/764e3bda/f18856aa.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Kanri's blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">springboot连接phoenix的几种方法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-15T06:23:48.000Z" title="发表于 2021-07-15 14:23:48">2021-07-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-15T07:25:59.000Z" title="更新于 2021-07-15 15:25:59">2021-07-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="springboot连接phoenix的几种方法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>虽说是介绍<code>springboot</code>连接phoenix的方法，其实因为用的是<code>jdbc</code>连接方式，其实只要是通过<code>jdbc</code>方式连接的数据库都可以通用，比如 <code>hive</code>。</p>
+<h3 id="1-原生方法连接数据库"><a href="#1-原生方法连接数据库" class="headerlink" title="1.原生方法连接数据库"></a>1.原生方法连接数据库</h3><p>自己手写 <code>Connection</code> ，<code>Statement</code>，<code>PreparedStatement</code>，<code>ResultSet</code>，手写数据库连接和关闭，自己提交sql语句。</p>
+<p>这种方法是最开始学习数据库连接的方法，后面连接数据库的方法都是在这样的基础上进行了封装和扩充。优点是能够了解数据库连接过程，但是缺陷更加明显，比如何时建立连接何时关闭，是否自动提交，还要自己维护线程池，非常麻烦。但是假如你需要在项目中<code>动态连接</code>多个数据库，大概就要采用这种方式了。除此之外，不建议采用这种纯原生的连接方式。</p>
+<p>示例：<a target="_blank" rel="noopener" href="https://github.com/gitriver/alad-phoenix">https://github.com/gitriver/alad-phoenix</a>    想学习这种方法的可以看看这个。</p>
+<h3 id="2-JdbcTemplate"><a href="#2-JdbcTemplate" class="headerlink" title="2.JdbcTemplate"></a>2.JdbcTemplate</h3><p>通过配置类中加载<code>DataSource</code>、<code>JdbcTemplate</code>来操作<code>phoenix</code>，实际上<code>JdbcTemplate</code>是<code>spring</code>对方法（1）的封装，但是可以省事，何乐而不为呢？</p>
+<p>配置类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PhoenixDataSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Environment env;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(name = &quot;phoenixJdbcDataSource&quot;)</span></span><br><span class="line">    <span class="meta">@Qualifier(&quot;phoenixJdbcDataSource&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DruidDataSource dataSource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">        dataSource.setUrl(env.getProperty(<span class="string">&quot;phoenix.url&quot;</span>));</span><br><span class="line">        dataSource.setDriverClassName(env.getProperty(<span class="string">&quot;phoenix.driver-class-name&quot;</span>));</span><br><span class="line">        dataSource.setUsername(env.getProperty(<span class="string">&quot;phoenix.username&quot;</span>));<span class="comment">//phoenix的用户名默认为空</span></span><br><span class="line">        dataSource.setPassword(env.getProperty(<span class="string">&quot;phoenix.password&quot;</span>));<span class="comment">//phoenix的密码默认为空</span></span><br><span class="line">        dataSource.setDefaultAutoCommit(Boolean.valueOf(env.getProperty(<span class="string">&quot;phoenix.default-auto-commit&quot;</span>)));</span><br><span class="line">        dataSource.setConnectionProperties(<span class="string">&quot;phoenix.schema.isNamespaceMappingEnabled=true&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dataSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(name = &quot;phoenixJdbcTemplate&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JdbcTemplate <span class="title">phoenixJdbcTemplate</span><span class="params">(<span class="meta">@Qualifier(&quot;phoenixJdbcDataSource&quot;)</span> DataSource dataSource)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JdbcTemplate(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Service层：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CRUDServiceImp</span> <span class="keyword">implements</span> <span class="title">CRUDService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="meta">@Qualifier(&quot;phoenixJdbcTemplate&quot;)</span></span><br><span class="line">    JdbcTemplate phoenixJdbcTemplate;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        phoenixJdbcTemplate.update(<span class="string">&quot;upsert into data_provision.company(id,name,address) values(&#x27;20&#x27;,&#x27;xuxiao&#x27;,&#x27;德国柏林&#x27;)&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Result(<span class="keyword">true</span>,<span class="string">&quot;数据添加成功&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">update</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> res = phoenixJdbcTemplate.update(<span class="string">&quot;upsert into data_provision.company(id,name) values(&#x27;20&#x27;,&#x27;yyggg&#x27;)&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Result(<span class="keyword">true</span>,<span class="string">&quot;数据更新成功&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Result <span class="title">delete</span><span class="params">()</span></span>&#123;</span><br><span class="line">        phoenixJdbcTemplate.update(<span class="string">&quot;delete from data_provision.company where id =&#x27;20&#x27;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Result(<span class="keyword">true</span>,<span class="string">&quot;数据删除成功&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; query()&#123;</span><br><span class="line">        <span class="keyword">return</span> phoenixJdbcTemplate.queryForList(<span class="string">&quot;select * from data_provision.company&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; tSql(String sql)&#123;</span><br><span class="line">        <span class="keyword">return</span> phoenixJdbcTemplate.queryForList(sql);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">updateSql</span><span class="params">(String sql)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> phoenixJdbcTemplate.update(sql);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>优点：方便，代码量不大。通过这种方式不需要实现dao层，假如不需要映射到实体类的话可以说是上选。</p>
+<p>缺点：由于没有orm，所以想直接将数据库映射到实体类是做不到的。当然，你要自己实现也未尝不可，但是为什么要自己造轮子呢？</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/bener/p/10617065.html">JdbcTemplate实体映射</a></p>
+<p>示例：<a target="_blank" rel="noopener" href="https://github.com/Gyoliu/phoenix-hbase">https://github.com/Gyoliu/phoenix-hbase</a></p>
+<p>###3.orm框架</p>
+<p>通过现有的<code>orm</code>框架来进行连接，<code>hibernate</code>和<code>mybatis</code>都可以。</p>
+<p><code>hibernate</code>能够通过数据库类型来将hql语句转变成对应数据库的方言。虽然<code>hibernate</code>没有<code>phoenix</code>的方言，不过在github上有人制作了。我没试过，希望尝试过的人能和我分享一下使用心得。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jruesga/phoenix-hibernate-dialect">https://github.com/jruesga/phoenix-hibernate-dialect</a>  （hibernate的phoenix方言制作）</p>
+<p><code>mybatis</code>，通过<code>jdbc</code>连接到<code>phoenix</code>，指定<code>phoenix</code>的驱动jar，就可以连接到了。<code>jdbc</code>连接既可以是<code>zookeeper</code>的地址( jdbc:phoenix:zookeeper )，也可以是<code>phoenix</code>的thin-connect( jdbc:phoenix:thin:url )。在使用轻连接之前需要先打开phoenix的轻连接。</p>
+<p>通过<code>mybatis</code>连接不能指定数据库，连接的是默认数据库。所以在指定数据表的时候需要加上数据库，如（db.table）。也可以通过mybatis-plus的@TableName注解来指定数据表（如@TableName(“DEV.TEST”)），假如需要小写的话可以用双引号限定小写（如@TableName(“\“dev.test2\“”)）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">datasource:</span><br><span class="line">    #数据库连接信息</span><br><span class="line">    url: jdbc:phoenix:slaver01-robin,slaver02-robin,master-robin:2181</span><br><span class="line">    username:</span><br><span class="line">    password:</span><br><span class="line">    driver-class-name: org.apache.phoenix.jdbc.PhoenixDriver     #驱动</span><br><span class="line">    # 如果不想配置对数据库连接池做特殊配置的话,以下关于连接池的配置就不是必须的</span><br><span class="line">    # spring-boot 2.X 默认采用高性能的 Hikari 作为连接池 更多配置可以参考 https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby</span><br><span class="line">    type: com.zaxxer.hikari.HikariDataSource</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>示例：<a target="_blank" rel="noopener" href="https://gitee.com/zhengshunzi/springboot-phoenix">https://gitee.com/zhengshunzi/springboot-phoenix</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mlwise/springboot-mybatis-phoenix-demo">https://github.com/mlwise/springboot-mybatis-phoenix-demo</a></p>
+<p>优点和缺点都是<code>orm</code>框架自身的缺点，毕竟是可以商用的框架，在简单、易用、稳定、可移植性上比原生代码强太多了。在连接方式上可以说是最好的选择了。</p>
+<ul>
+<li>  连接异常</li>
+</ul>
+<p>1.客户端命名空间映射未启用</p>
+<p>具体报错为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">java.sql.SQLException: ERROR 726 (43M10):  Inconsistent namespace mapping properties. Cannot initiate connection as SYSTEM:CATALOG is found but client does not have phoenix.schema.isNamespaceMappingEnabled enabled</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>单看字面意思是说你的<code>hbase</code>配置中没有以下配置，很多博客也说是这个原因，确实也有可能，不过我看网上博客在分享如何安装<code>phoenix</code>的时候，没有一篇会把这个配置给漏掉，所以我认为因为<code>hbase</code>配置问题才连不上的是少数中的少数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">   &lt;name&gt;phoenix.schema.isNamespaceMappingEnabled&lt;/name&gt;</span><br><span class="line">   &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面报错说是客户端没有将<code>phoenix.schema.isNamespaceMappingEnabled</code>设置为true。这里的客户端，指的是你的springboot项目,而不是hbase的客户端配置。</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-2adc027b056e80091f2687eb32e39175997.png"></p>
+<p>假如你用的是<code>cdh</code> <code>hadoop</code>，在CM平台上把客户端高级配置加上命名空间映射是没用的。正确的解决办法有两种：</p>
+<p>1）在连接池的配置中把<code>phoenix.schema.isNamespaceMappingEnabled</code>设置为true</p>
+<p>这个操作可以在配置文件中完成，也可以在手动加载配置类中完成。但是通过这种方式，你的连接池必须为<code>Druid</code>而不是Springboot2默认的<code>Hikari</code>。</p>
+<p>在<code>application.properties</code>中增加配置：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.connectionProperties=phoenix.schema.isNamespaceMappingEnabled=true</span><br></pre></td></tr></table></figure>
+
+<p>或，手动加载配置类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean(name = &quot;phoenixJdbcDataSource&quot;)</span></span><br><span class="line">    <span class="meta">@Qualifier(&quot;phoenixJdbcDataSource&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DruidDataSource dataSource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">        dataSource.setUrl(env.getProperty(<span class="string">&quot;phoenix.url&quot;</span>));</span><br><span class="line">        dataSource.setDriverClassName(env.getProperty(<span class="string">&quot;phoenix.driver-class-name&quot;</span>));</span><br><span class="line">        dataSource.setUsername(env.getProperty(<span class="string">&quot;phoenix.username&quot;</span>));<span class="comment">//phoenix的用户名默认为空</span></span><br><span class="line">        dataSource.setPassword(env.getProperty(<span class="string">&quot;phoenix.password&quot;</span>));<span class="comment">//phoenix的密码默认为空</span></span><br><span class="line">        dataSource.setDefaultAutoCommit(Boolean.valueOf(env.getProperty(<span class="string">&quot;phoenix.default-auto-commit&quot;</span>)));</span><br><span class="line">        dataSource.setConnectionProperties(<span class="string">&quot;phoenix.schema.isNamespaceMappingEnabled=true&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dataSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># phoenix 数据源自定义配置</span><br><span class="line">phoenix.enable= true</span><br><span class="line">phoenix.url=jdbc:phoenix:192.168.49.180,192.168.49.181:2181</span><br><span class="line">phoenix.type=com.alibaba.druid.pool.DruidDataSource</span><br><span class="line">phoenix.driver-class-name=org.apache.phoenix.jdbc.PhoenixDriver</span><br><span class="line">phoenix.username=</span><br><span class="line">phoenix.password=</span><br><span class="line">phoenix.default-auto-commit=true</span><br><span class="line">phoenix.schema.isNamespaceMappingEnabled=true</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2）在配置文件中新增一个<code>hbase-site.xml</code>，在这里加载配置（推荐）</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-0a9ba4a5b9e33223bf3a636d3d09b3374b5.png"></p>
+<p>只需要加载这一个配置就可以了，没有必要和<code>hbase</code>的同步。这样也能用<code>Hikari</code>连接池。</p>
+<p>另外附一个不那么正经的解决办法，就是通过<code>phoenix</code>的轻连接来连接<code>phoenix</code>，不会报命名空间映射未启用的错误。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.url=jdbc:phoenix:thin:url=http://phoenix:8765;serialization=PROTOBUF</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="http://2.com/google/protobuf/LiteralByteString%E7%B1%BB%E9%97%AE%E9%A2%98">2.com/google/protobuf/LiteralByteString类问题</a></p>
+<p>这个问题大概只有我自己遇到了…不过也写给大家分享一下。最开始报错是java.lang.NoClassDefFoundError: com/google/protobuf/LiteralByteString，没有找到这个类。我选择通过idea寻找maven添加，就是这一步让我上了大当。idea给我的搜索结果是：</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-d694766e637a5d73ae1865c844890f8a9fc.png"></p>
+<p>添加org.apache.hive:hive-exec:3.1.0。看上去没什么问题，添加上去之后也能找到这个类，但是运行起来报了另外一个错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">VerifyError: class com.google.protobuf.LiteralByteString overrides final met</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>具体报错找不到了，大概意思是说类型转换错误。</p>
+<p>思考了很久，通过idea的Dependency Analyzer对比jar包，才发现网上能够正常运行的项目，com.google.protobuf：protobuf-java这个包是2.5.0版本，而我的则是3.1.0。在pom中指定版本之后，错误就消失了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">鈴木観理</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.kanri.top/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/">https://blog.kanri.top/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.kanri.top" target="_blank">Kanri's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/springboot/">springboot</a><a class="post-meta__tags" href="/tags/phoenix/">phoenix</a><a class="post-meta__tags" href="/tags/mybatis/">mybatis</a></div><div class="post_share"><div class="social-share" data-image="http://pic.yupoo.com/hi-story/bf1e66ea/68234fa4.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/08/13/Lua-LuaRocks-%E5%AE%89%E8%A3%85/"><img class="prev-cover" src="https://s3.jpg.cm/2021/08/13/IcGJdL.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Lua LuaRocks 安装</div></div></a></div><div class="next-post pull-right"><a href="/2021/07/14/CGO-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"><img class="next-cover" src="https://s3.jpg.cm/2021/07/13/IQFW6y.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CGO 类型转换</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://avatars.githubusercontent.com/u/63801131?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">鈴木観理</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Yiwen-Chan"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8E%9F%E7%94%9F%E6%96%B9%E6%B3%95%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">1.原生方法连接数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-JdbcTemplate"><span class="toc-number">2.</span> <span class="toc-text">2.JdbcTemplate</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/16/luasocket-%E5%AE%89%E8%A3%85/" title="luasocket 安装"><img src="https://s3.jpg.cm/2021/08/13/Icq29k.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="luasocket 安装"/></a><div class="content"><a class="title" href="/2021/08/16/luasocket-%E5%AE%89%E8%A3%85/" title="luasocket 安装">luasocket 安装</a><time datetime="2021-08-16T09:04:22.000Z" title="发表于 2021-08-16 17:04:22">2021-08-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/13/Lua-LuaRocks-%E5%AE%89%E8%A3%85/" title="Lua LuaRocks 安装"><img src="https://s3.jpg.cm/2021/08/13/IcGJdL.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Lua LuaRocks 安装"/></a><div class="content"><a class="title" href="/2021/08/13/Lua-LuaRocks-%E5%AE%89%E8%A3%85/" title="Lua LuaRocks 安装">Lua LuaRocks 安装</a><time datetime="2021-08-13T02:31:07.000Z" title="发表于 2021-08-13 10:31:07">2021-08-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/" title="springboot连接phoenix的几种方法"><img src="http://pic.yupoo.com/hi-story/bf1e66ea/68234fa4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="springboot连接phoenix的几种方法"/></a><div class="content"><a class="title" href="/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/" title="springboot连接phoenix的几种方法">springboot连接phoenix的几种方法</a><time datetime="2021-07-15T06:23:48.000Z" title="发表于 2021-07-15 14:23:48">2021-07-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/14/CGO-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="CGO 类型转换"><img src="https://s3.jpg.cm/2021/07/13/IQFW6y.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CGO 类型转换"/></a><div class="content"><a class="title" href="/2021/07/14/CGO-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="CGO 类型转换">CGO 类型转换</a><time datetime="2021-07-14T14:11:16.000Z" title="发表于 2021-07-14 22:11:16">2021-07-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/13/CGO-Go-%E4%B8%8E-C-%E7%9A%84%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8/" title="CGO Go 与 C 的互相调用"><img src="https://s3.jpg.cm/2021/07/13/IQEvIu.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CGO Go 与 C 的互相调用"/></a><div class="content"><a class="title" href="/2021/07/13/CGO-Go-%E4%B8%8E-C-%E7%9A%84%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8/" title="CGO Go 与 C 的互相调用">CGO Go 与 C 的互相调用</a><time datetime="2021-07-13T13:47:32.000Z" title="发表于 2021-07-13 21:47:32">2021-07-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 鈴木観理</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
