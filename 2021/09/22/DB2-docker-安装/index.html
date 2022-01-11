@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DB2 docker 安装 | Kanri's blog</title><meta name="keywords" content="DB2,docker,database"><meta name="author" content="鈴木観理"><meta name="copyright" content="鈴木観理"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="官方文档Installing the Db2 Community Edition Docker image on Linux systems 前期准备 需要安装并掌握 docker 的使用方法  安装流程拉取 docker 镜像 拉取官方最新版本的 DB2 docker 镜像docker pull ibmcom&#x2F;db2 查看已经拉取的 docker 镜像docker image ls可以看到返回结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DB2 docker 安装">
+<meta property="og:url" content="https://blog.kanri.top/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:site_name" content="Kanri&#39;s blog">
+<meta property="og:description" content="官方文档Installing the Db2 Community Edition Docker image on Linux systems 前期准备 需要安装并掌握 docker 的使用方法  安装流程拉取 docker 镜像 拉取官方最新版本的 DB2 docker 镜像docker pull ibmcom&#x2F;db2 查看已经拉取的 docker 镜像docker image ls可以看到返回结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.jpg.cm/2021/09/22/IF6ZEU.jpg">
+<meta property="article:published_time" content="2021-09-22T02:05:34.000Z">
+<meta property="article:modified_time" content="2022-01-11T08:28:57.523Z">
+<meta property="article:author" content="鈴木観理">
+<meta property="article:tag" content="DB2">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="database">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.jpg.cm/2021/09/22/IF6ZEU.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.kanri.top/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DB2 docker 安装',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-11 16:28:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Kanri's blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://avatars.githubusercontent.com/u/63801131?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.jpg.cm/2021/09/22/IF6ZEU.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Kanri's blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-folder-open"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DB2 docker 安装</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-09-22T02:05:34.000Z" title="发表于 2021-09-22 10:05:34">2021-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-11T08:28:57.523Z" title="更新于 2022-01-11 16:28:57">2022-01-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DB2 docker 安装"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h3><p><a target="_blank" rel="noopener" href="https://www.ibm.com/support/producthub/db2/docs/content/SSEPGG_11.5.0/com.ibm.db2.luw.db2u_openshift.doc/doc/t_install_db2CE_linux_img.html">Installing the Db2 Community Edition Docker image on Linux systems</a></p>
+<h3 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h3><ul>
+<li>需要安装并掌握 docker 的使用方法</li>
+</ul>
+<h3 id="安装流程"><a href="#安装流程" class="headerlink" title="安装流程"></a>安装流程</h3><h4 id="拉取-docker-镜像"><a href="#拉取-docker-镜像" class="headerlink" title="拉取 docker 镜像"></a>拉取 docker 镜像</h4><ol>
+<li>拉取官方最新版本的 DB2 docker 镜像<br><code>docker pull ibmcom/db2</code></li>
+<li>查看已经拉取的 docker 镜像<br><code>docker image ls</code><br>可以看到返回结果<br><code>ibmcom/db2            latest    a6a5ee354fb1   2 months ago   2.95GB</code><h4 id="进入-docker-容器"><a href="#进入-docker-容器" class="headerlink" title="进入 docker 容器"></a>进入 docker 容器</h4></li>
+<li>进入Docker容器：<br><code>docker run -d -p 50000:50000 --name db2 --privileged=true -e DB2INST1_PASSWORD=123456 -e DBNAME=testdb -e LICENSE=accept ibmcom/db2</code></li>
+</ol>
+<ul>
+<li>-d: 表示在后台启动容器</li>
+<li>-p 50000:50000: 容器内部的 50000 端口映射到主机的 50000 端口</li>
+<li>–name db2: 将容器命名 db2</li>
+<li>–privileged=true: 使得容器内的 root 拥有真正的 root 权限</li>
+<li>-e DB2INST1_PASSWORD=123456：设置内置实例用户 db2inst1 的密码为 123456</li>
+<li>-e DBNAME=testdb：容器启动时自动创建一个名为 testdb 的数据库，如果不指定该参数则不创建数据库</li>
+<li>-e LICENSE=accept：接受协议</li>
+</ul>
+<ol start="2">
+<li>查看已有的 docker 容器<br><code>docker ps</code><br>可以看到返回结果<br><code>d16a04516597   ibmcom/db2            &quot;/var/db2_setup/lib/…&quot;   6 days ago   Up 2 hours   22/tcp, 55000/tcp, 60006-60007/tcp, 0.0.0.0:50000-&gt;50000/tcp   db2</code></li>
+<li>启动 db2 容器<br><code>docker start db2</code></li>
+<li>进入 db2 容器<br><code>docker attach db2</code><h4 id="信息查看"><a href="#信息查看" class="headerlink" title="信息查看"></a>信息查看</h4></li>
+<li>切换到 db2iadm1 组的用户 db2inst1<br><code>su db2inst1</code></li>
+<li>查看 DB2 版本<br><code>db2licm -l</code><br>可以看到返回结果<br><code>Product name:                     &quot;DB2 Community Edition&quot;</code><br><code>License type:                     &quot;Community&quot;</code><br><code>Expiry date:                      &quot;Permanent&quot;</code><br><code>Product identifier:               &quot;db2dec&quot;</code><br><code>Version information:              &quot;11.5&quot;</code><br><code>Max amount of memory (GB):        &quot;16&quot;</code><br><code>Max number of cores:              &quot;4&quot;</code><br><code>Max amount of table space (GB):   &quot;100&quot;</code></li>
+<li>查看实例信息<br><code>db2level</code><br>可以看到返回结果<br><code>DB21085I  This instance or install (instance name, where applicable: &quot;testdb&quot;) uses &quot;64&quot; bits and DB2 code release &quot;SQL11056&quot; with level identifier &quot;0607010F&quot;. Informational tokens are &quot;DB2 v11.5.6.0&quot;, &quot;s2106111000&quot;, &quot;DYN2106111000AMD64&quot;, and Fix Pack &quot;0&quot;. Product is installed at &quot;/opt/ibm/db2/V11.5&quot;.</code></li>
+<li>查看该系统下的实例列表<br><code>db2ilist</code></li>
+<li>查看该用户下的实例列表<br><code>db2 list db directory</code><h4 id="启动数据库"><a href="#启动数据库" class="headerlink" title="启动数据库"></a>启动数据库</h4></li>
+<li>用实例对应的用户，启动数据库<br><code>db2start</code><br>可以看到返回结果<br><code>SQL1063N  DB2START processing was successful.</code></li>
+<li>使用本地连接数据库<br><code>db2 connect to testdb user db2inst1 using 123456</code><br>可以看到返回结果<br><code>Database Connection Information</code><br><code>Database server        = DB2/LINUXX8664 11.5.6.0</code><br><code>SQL authorization ID   = DB2INST1</code><br><code>Local database alias   = TESTDB</code></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">鈴木観理</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.kanri.top/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/">https://blog.kanri.top/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.kanri.top" target="_blank">Kanri's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DB2/">DB2</a><a class="post-meta__tags" href="/tags/docker/">docker</a><a class="post-meta__tags" href="/tags/database/">database</a></div><div class="post_share"><div class="social-share" data-image="https://s3.jpg.cm/2021/09/22/IF6ZEU.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/08/16/luasocket-%E5%AE%89%E8%A3%85/"><img class="next-cover" src="https://s3.jpg.cm/2021/08/13/Icq29k.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">luasocket 安装</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://avatars.githubusercontent.com/u/63801131?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">鈴木観理</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Yiwen-Chan"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3"><span class="toc-number">1.</span> <span class="toc-text">官方文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="toc-number">2.</span> <span class="toc-text">前期准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">安装流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%89%E5%8F%96-docker-%E9%95%9C%E5%83%8F"><span class="toc-number">3.1.</span> <span class="toc-text">拉取 docker 镜像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5-docker-%E5%AE%B9%E5%99%A8"><span class="toc-number">3.2.</span> <span class="toc-text">进入 docker 容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%9F%A5%E7%9C%8B"><span class="toc-number">3.3.</span> <span class="toc-text">信息查看</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">3.4.</span> <span class="toc-text">启动数据库</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/" title="DB2 docker 安装"><img src="https://s3.jpg.cm/2021/09/22/IF6ZEU.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="DB2 docker 安装"/></a><div class="content"><a class="title" href="/2021/09/22/DB2-docker-%E5%AE%89%E8%A3%85/" title="DB2 docker 安装">DB2 docker 安装</a><time datetime="2021-09-22T02:05:34.000Z" title="发表于 2021-09-22 10:05:34">2021-09-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/16/luasocket-%E5%AE%89%E8%A3%85/" title="luasocket 安装"><img src="https://s3.jpg.cm/2021/08/13/Icq29k.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="luasocket 安装"/></a><div class="content"><a class="title" href="/2021/08/16/luasocket-%E5%AE%89%E8%A3%85/" title="luasocket 安装">luasocket 安装</a><time datetime="2021-08-16T09:04:22.000Z" title="发表于 2021-08-16 17:04:22">2021-08-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/13/Lua-LuaRocks-%E5%AE%89%E8%A3%85/" title="Lua LuaRocks 安装"><img src="https://s3.jpg.cm/2021/08/13/IcGJdL.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Lua LuaRocks 安装"/></a><div class="content"><a class="title" href="/2021/08/13/Lua-LuaRocks-%E5%AE%89%E8%A3%85/" title="Lua LuaRocks 安装">Lua LuaRocks 安装</a><time datetime="2021-08-13T02:31:07.000Z" title="发表于 2021-08-13 10:31:07">2021-08-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/" title="springboot连接phoenix的几种方法"><img src="http://pic.yupoo.com/hi-story/bf1e66ea/68234fa4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="springboot连接phoenix的几种方法"/></a><div class="content"><a class="title" href="/2021/07/15/springboot%E8%BF%9E%E6%8E%A5phoenix%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/" title="springboot连接phoenix的几种方法">springboot连接phoenix的几种方法</a><time datetime="2021-07-15T06:23:48.000Z" title="发表于 2021-07-15 14:23:48">2021-07-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/14/CGO-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="CGO 类型转换"><img src="https://s3.jpg.cm/2021/07/13/IQFW6y.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CGO 类型转换"/></a><div class="content"><a class="title" href="/2021/07/14/CGO-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="CGO 类型转换">CGO 类型转换</a><time datetime="2021-07-14T14:11:16.000Z" title="发表于 2021-07-14 22:11:16">2021-07-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 鈴木観理</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
