@@ -6,7 +6,7 @@
   <link href="https://blog.kanri.top/atom.xml" rel="self"/>
   
   <link href="https://blog.kanri.top/"/>
-  <updated>2022-02-02T10:14:33.222Z</updated>
+  <updated>2022-02-03T06:08:55.247Z</updated>
   <id>https://blog.kanri.top/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Go HTTP 标准库 使用代理</title>
+    <link href="https://blog.kanri.top/2022/02/03/Go-HTTP-%E6%A0%87%E5%87%86%E5%BA%93-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86/"/>
+    <id>https://blog.kanri.top/2022/02/03/Go-HTTP-%E6%A0%87%E5%87%86%E5%BA%93-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86/</id>
+    <published>2022-02-03T02:52:19.000Z</published>
+    <updated>2022-02-03T06:08:55.247Z</updated>
+    
+    <content type="html"><![CDATA[<p>Go HTTP 标准库不走系统代理，因此我们通过 <code>Fiddler</code> 抓包的时候，是抓不到标准库发送的请求的。因此我们需要设置其代理</p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fiddler</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">proxy, err := url.Parse(<span class="string">&quot;http://127.0.0.1:8866&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"><span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line">client := &amp;http.Client&#123;</span><br><span class="line">Transport: &amp;http.Transport&#123;</span><br><span class="line">Proxy: http.ProxyURL(proxy),</span><br><span class="line">&#125;,</span><br><span class="line">&#125;</span><br><span class="line">req, err := http.NewRequest(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;https://www.baidu.com&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"><span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line">resp, err := client.Do(req)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"><span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">defer</span> resp.Body.Close()</span><br><span class="line"><span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>执行 <code>fiddler()</code> 我们可以在 <code>Fiddler</code> 里面抓到访问 <code>https://www.baidu.com</code> 的请求。其中 <code>8866</code> 为 <code>Fiddler</code> 的监听端口，可以通过 <code>Fiddler</code> 设置。</p><p>顺带一提，我们可以通过 <code>import &quot;golang.org/x/sys/windows/registry&quot;</code> 获取系统代理</p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">key, err := registry.OpenKey(</span><br><span class="line">registry.CURRENT_USER,</span><br><span class="line"><span class="string">`SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings`</span>,</span><br><span class="line">registry.QUERY_VALUE)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"><span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br><span class="line">val, _, err := key.GetStringValue(<span class="string">&quot;ProxyServer&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"><span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Go HTTP 标准库不走系统代理，因此我们通过 &lt;code&gt;Fiddler&lt;/code&gt; 抓包的时候，是抓不到标准库发送的请求的。因此我们需要设置其代理&lt;/p&gt;
+&lt;figure class=&quot;highlight go&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutt</summary>
+      
+    
+    
+    
+    
+    <category term="Golang" scheme="https://blog.kanri.top/tags/Golang/"/>
+    
+    <category term="HTTP" scheme="https://blog.kanri.top/tags/HTTP/"/>
+    
+    <category term="Proxy" scheme="https://blog.kanri.top/tags/Proxy/"/>
+    
+  </entry>
   
   <entry>
     <title>Go HTTP 标准库 多线程下载</title>
